@@ -1,16 +1,19 @@
-import { defineConfig, loadEnv } from 'vitest/config';
+import { defineConfig } from "vitest/config";
+import { loadEnv } from "vite";
 
-// Vitest does not automatically load Next.js .env.local files. Load test-specific
-// files explicitly so integration tests don't silently skip when configured.
 export default defineConfig(() => {
-  const env = loadEnv('test', process.cwd(), '');
+  const env = loadEnv("test", process.cwd(), "");
+
   for (const [key, value] of Object.entries(env)) {
-    if (!process.env[key]) process.env[key] = value;
+    if (!process.env[key]) {
+      process.env[key] = value;
+    }
   }
+
   return {
     test: {
-      environment: 'node',
-      include: ['tests/**/*.test.ts'],
+      environment: "node",
+      include: ["tests/**/*.test.ts"],
     },
   };
 });
