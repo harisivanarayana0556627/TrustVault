@@ -53,7 +53,7 @@ npm test
 npm run build
 ```
 
-The RLS integration tests are skipped until these variables are supplied:
+The RLS integration tests load `.env.test.local` automatically and are skipped until all six variables below are supplied:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `TEST_USER_A_JWT` (owner's current access token)
@@ -61,7 +61,7 @@ The RLS integration tests are skipped until these variables are supplied:
 - `TEST_PRIVATE_DOCUMENT_ID`
 - `TEST_PRIVATE_STORAGE_PATH` (normally `<document UUID>/content`)
 
-Use disposable test accounts and non-sensitive files. Never commit JWTs or service credentials. Run the tests against the same Supabase policies used by the deployed app.
+Use disposable test accounts and non-sensitive files. Never commit JWTs or service credentials. The third test uses the authenticated viewer UUID for both foreign-key fields so a foreign-key failure cannot falsely count as an RLS denial. Run the tests against the same Supabase policies used by the deployed app. If tests are skipped, verify the file is named exactly `.env.test.local` in the project root and contains real values rather than placeholders.
 
 ## Deploy
 1. Push the repository to the Git host required by the challenge, observing the placement cell's clarification about repository visibility.

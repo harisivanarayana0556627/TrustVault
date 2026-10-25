@@ -1,5 +1,6 @@
 -- TrustVault schema. Run in Supabase SQL Editor on a fresh project.
-create extension if not exists pgcrypto;
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
 create type public.app_role as enum ('admin','owner','viewer');
 create type public.doc_permission as enum ('read','edit');
 create type public.audit_outcome as enum ('success','denied','failure');
@@ -82,7 +83,7 @@ create policy "users read own audit events" on public.audit_events for select to
 -- Append-only audit RPC. Only service_role may execute it; application server validates identity first.
 create or replace function public.append_audit_event(
  p_actor_id uuid, p_action text, p_document_id uuid, p_outcome public.audit_outcome, p_details jsonb default '{}'::jsonb
-) returns bigint language plpgsql security definer set search_path=public,pg_temp as $$
+) returns bigint language plpgsql security definer set search_path=public,extensions,pg_temp as $$
 declare prior_hash text; new_id bigint; payload text; new_hash text; event_time timestamptz;
 begin
  if p_action not in ('document.upload','document.download','document.update','document.delete','permission.grant','permission.revoke','document.read') then
